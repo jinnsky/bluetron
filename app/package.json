@@ -1,0 +1,23 @@
+{
+  "name": "bluetron",
+  "version": "1.0.0",
+  "description": "Application to interact with Bluetooth low energy devices.",
+  "main": "dist/main.js",
+  "keywords": [
+    "electron",
+    "ble"
+  ],
+  "author": "Jingtian Yang <jinnsky@gmail.com>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": ""
+  },
+  "dependencies": {
+    "noble": "^1.6.0",
+    "react": "^15.3.1",
+    "react-addons-update": "^15.3.1",
+    "react-dom": "^15.3.1",
+    "react-router": "^2.7.0"
+  }
+}

@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Bluetron</title>
+    <link href="css/bootstrap.css" rel="stylesheet">
+    <style>
+      body {
+        margin-top: 70px;
+      }
+      .row {
+        margin-left: 0;
+        margin-right: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="content"></div>
+    <script>
+      // Required to make jQuery work with electron and CommonJS.
+      window.$ = window.jQuery = require('./js/jquery-2.1.4.js');
+    </script>
+    <script src="js/bootstrap.js"></script>
+    <script>
+      require('./dist/app.js');
+    </script>
+  </body>
+</html>
