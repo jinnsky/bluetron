@@ -62,9 +62,9 @@ gulp.task('fix-node-usb', ['install-dependencies'], () => {
   // Only run this task on windows and linux where the bluetooth-hci-socket
   // module is used by noble.
   if (platform === 'win32' || platform === 'linux') {
-    return gulp.src('app/node_modules/noble/node_modules/bluetooth-hci-socket/node_modules/usb/binding.gyp')
+    return gulp.src('app/node_modules/usb/binding.gyp')
       .pipe(replace("'use_system_libusb%': 'false',", "'use_system_libusb%': 'false',\n'module_name': 'usb_bindings',\n'module_path': './src/binding',"))
-      .pipe(gulp.dest('./app/node_modules/noble/node_modules/bluetooth-hci-socket/node_modules/usb/'))
+      .pipe(gulp.dest('./app/node_modules/usb/'))
   }
 })
 
@@ -72,7 +72,7 @@ gulp.task('rebuild-usb', ['fix-node-usb'], () => {
   // Rebuild noble's usb module with the correct electron version.
   // Only run this task on windows and linux.
   if (platform === 'win32' || platform === 'linux') {
-    return shell('cd app/node_modules/noble/node_modules/bluetooth-hci-socket/node_modules/usb && node-gyp rebuild --target=' + electronVersion + ' --dist-url=https://atom.io/download/atom-shell').exec()
+    return shell('cd app/node_modules/usb && node-gyp rebuild --target=' + electronVersion + ' --dist-url=https://atom.io/download/atom-shell').exec()
   }
 })
 
@@ -80,7 +80,7 @@ gulp.task('rebuild-bluetooth-hci-socket', ['rebuild-usb'], () => {
   // Rebuild noble's bluetooth-hci-socket module with the correct electron version.
   // Only run this task on windows and linux.
   if (platform === 'win32' || platform === 'linux') {
-    return shell('cd app/node_modules/noble/node_modules/bluetooth-hci-socket && node-gyp rebuild --target=' + electronVersion + ' --dist-url=https://atom.io/download/atom-shell').exec()
+    return shell('cd app/node_modules/bluetooth-hci-socket && node-gyp rebuild --target=' + electronVersion + ' --dist-url=https://atom.io/download/atom-shell').exec()
   }
 })
 
