@@ -14,7 +14,7 @@ var app = require('./app/package.json')
 
 
 // Global variables to control build and package.
-var electronVersion = '1.3.4',
+var electronVersion = '1.4.14',
   packageName = 'jinnsky-ble',
   fullName = 'Bluetron',
   platform = os.platform(),
