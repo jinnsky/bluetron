@@ -68,7 +68,24 @@ gulp.task('fix-node-usb', ['install-dependencies'], () => {
   }
 })
 
-gulp.task('rebuild-usb', ['fix-node-usb'], () => {
+gulp.task('add-timespec-def', ['fix-node-usb'], () => {
+  // Add HAVE_STRUCT_TIMESPEC and _TIMESPEC_DEFINED definition
+  if (platform === 'win32') {
+    var fs = require('fs')
+    var file = 'app\\node_modules\\usb\\libusb.gypi'
+    var data = fs.readFileSync(file).toString().split("\n")
+    data.splice(126, 0, '          \'defines\':[')
+    data.splice(127, 0, '            \'HAVE_STRUCT_TIMESPEC=1\',')
+    data.splice(128, 0, '            \'_TIMESPEC_DEFINED=1\'')
+    data.splice(129, 0, '           ]')
+    var text = data.join("\n")
+    fs.writeFile(file, text, function (err) {
+      if (err) return console.log(err)
+    });
+  }
+})
+
+gulp.task('rebuild-usb', ['add-timespec-def'], () => {
   // Rebuild noble's usb module with the correct electron version.
   // Only run this task on windows and linux.
   if (platform === 'win32' || platform === 'linux') {
