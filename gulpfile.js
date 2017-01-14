@@ -94,7 +94,7 @@ gulp.task('native-build', ['install-dependencies', 'rebuild-bluetooth-hci-socket
   // task, therefore nothing needs to be done at this point for windows.
   if (platform === 'darwin') {
     // For Mac OSX just run electron-rebuild as it works fine on noble's OSX dependencies.
-    return shell('./node_modules/.bin/electron-rebuild -v ' + electronVersion + ' -m ./app/node_modules/').exec()
+    return shell('./node_modules/.bin/electron-rebuild -v ' + electronVersion + ' -m ./app/').exec()
   }
 })
 
