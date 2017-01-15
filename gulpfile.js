@@ -134,7 +134,7 @@ gulp.task('electron-package', ['package-clean', 'build'], (callback) => {
     version: electronVersion,
     prune: true,
     overwrite: true,
-    asar: true,
+    asar: false,
   }
   // Set platform-specific options.
   if (platform === 'darwin') {
