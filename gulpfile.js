@@ -14,7 +14,7 @@ var app = require('./app/package.json')
 
 
 // Global variables to control build and package.
-var electronVersion = '1.3.4',
+var electronVersion = '1.4.14',
   packageName = 'jinnsky-ble',
   fullName = 'Bluetron',
   platform = os.platform(),
@@ -62,17 +62,34 @@ gulp.task('fix-node-usb', ['install-dependencies'], () => {
   // Only run this task on windows and linux where the bluetooth-hci-socket
   // module is used by noble.
   if (platform === 'win32' || platform === 'linux') {
-    return gulp.src('app/node_modules/noble/node_modules/bluetooth-hci-socket/node_modules/usb/binding.gyp')
+    return gulp.src('app/node_modules/usb/binding.gyp')
       .pipe(replace("'use_system_libusb%': 'false',", "'use_system_libusb%': 'false',\n'module_name': 'usb_bindings',\n'module_path': './src/binding',"))
-      .pipe(gulp.dest('./app/node_modules/noble/node_modules/bluetooth-hci-socket/node_modules/usb/'))
+      .pipe(gulp.dest('./app/node_modules/usb/'))
   }
 })
 
-gulp.task('rebuild-usb', ['fix-node-usb'], () => {
+gulp.task('add-timespec-def', ['fix-node-usb'], () => {
+  // Add HAVE_STRUCT_TIMESPEC and _TIMESPEC_DEFINED definition
+  if (platform === 'win32') {
+    var fs = require('fs')
+    var file = 'app\\node_modules\\usb\\libusb.gypi'
+    var data = fs.readFileSync(file).toString().split("\n")
+    data.splice(126, 0, '          \'defines\':[')
+    data.splice(127, 0, '            \'HAVE_STRUCT_TIMESPEC=1\',')
+    data.splice(128, 0, '            \'_TIMESPEC_DEFINED=1\'')
+    data.splice(129, 0, '           ]')
+    var text = data.join("\n")
+    fs.writeFile(file, text, function (err) {
+      if (err) return console.log(err)
+    });
+  }
+})
+
+gulp.task('rebuild-usb', ['add-timespec-def'], () => {
   // Rebuild noble's usb module with the correct electron version.
   // Only run this task on windows and linux.
   if (platform === 'win32' || platform === 'linux') {
-    return shell('cd app/node_modules/noble/node_modules/bluetooth-hci-socket/node_modules/usb && node-gyp rebuild --target=' + electronVersion + ' --dist-url=https://atom.io/download/atom-shell').exec()
+    return shell('cd app/node_modules/usb && node-gyp rebuild --target=' + electronVersion + ' --dist-url=https://atom.io/download/atom-shell').exec()
   }
 })
 
@@ -80,7 +97,7 @@ gulp.task('rebuild-bluetooth-hci-socket', ['rebuild-usb'], () => {
   // Rebuild noble's bluetooth-hci-socket module with the correct electron version.
   // Only run this task on windows and linux.
   if (platform === 'win32' || platform === 'linux') {
-    return shell('cd app/node_modules/noble/node_modules/bluetooth-hci-socket && node-gyp rebuild --target=' + electronVersion + ' --dist-url=https://atom.io/download/atom-shell').exec()
+    return shell('cd app/node_modules/bluetooth-hci-socket && node-gyp rebuild --target=' + electronVersion + ' --dist-url=https://atom.io/download/atom-shell').exec()
   }
 })
 
@@ -94,7 +111,7 @@ gulp.task('native-build', ['install-dependencies', 'rebuild-bluetooth-hci-socket
   // task, therefore nothing needs to be done at this point for windows.
   if (platform === 'darwin') {
     // For Mac OSX just run electron-rebuild as it works fine on noble's OSX dependencies.
-    return shell('./node_modules/.bin/electron-rebuild -v ' + electronVersion + ' -m ./app/node_modules/').exec()
+    return shell('./node_modules/.bin/electron-rebuild -v ' + electronVersion + ' -m ./app/').exec()
   }
 })
 
@@ -117,7 +134,7 @@ gulp.task('electron-package', ['package-clean', 'build'], (callback) => {
     version: electronVersion,
     prune: true,
     overwrite: true,
-    asar: true,
+    asar: false,
   }
   // Set platform-specific options.
   if (platform === 'darwin') {

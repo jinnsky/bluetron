@@ -14,10 +14,10 @@
     "url": ""
   },
   "dependencies": {
-    "noble": "^1.6.0",
-    "react": "^15.3.1",
-    "react-addons-update": "^15.3.1",
-    "react-dom": "^15.3.1",
-    "react-router": "^2.7.0"
+    "noble": "^1.7.0",
+    "react": "^15.4.2",
+    "react-addons-update": "^15.4.2",
+    "react-dom": "^15.4.2",
+    "react-router": "^3.0.1"
   }
 }
