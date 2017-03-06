@@ -14,7 +14,7 @@
     "url": ""
   },
   "dependencies": {
-    "noble": "^1.7.0",
+    "noble": "git://github.com/eavelardev/noble.git",
     "react": "^15.4.2",
     "react-addons-update": "^15.4.2",
     "react-dom": "^15.4.2",

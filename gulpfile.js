@@ -12,15 +12,13 @@ var del = require('del'),
 // Load the app package.json to read its version.
 var app = require('./app/package.json')
 
-
 // Global variables to control build and package.
-var electronVersion = '1.4.14',
+var electronVersion = '1.6.1',
   packageName = 'jinnsky-ble',
   fullName = 'Bluetron',
   platform = os.platform(),
   arch = os.arch(),
   appVersion = app.version
-
 
 function packageFullName() {
   // Return full package name including platform and architecture.
@@ -68,24 +66,7 @@ gulp.task('fix-node-usb', ['install-dependencies'], () => {
   }
 })
 
-gulp.task('add-timespec-def', ['fix-node-usb'], () => {
-  // Add HAVE_STRUCT_TIMESPEC and _TIMESPEC_DEFINED definition
-  if (platform === 'win32') {
-    var fs = require('fs')
-    var file = 'app\\node_modules\\usb\\libusb.gypi'
-    var data = fs.readFileSync(file).toString().split("\n")
-    data.splice(126, 0, '          \'defines\':[')
-    data.splice(127, 0, '            \'HAVE_STRUCT_TIMESPEC=1\',')
-    data.splice(128, 0, '            \'_TIMESPEC_DEFINED=1\'')
-    data.splice(129, 0, '           ]')
-    var text = data.join("\n")
-    fs.writeFile(file, text, function (err) {
-      if (err) return console.log(err)
-    });
-  }
-})
-
-gulp.task('rebuild-usb', ['add-timespec-def'], () => {
+gulp.task('rebuild-usb', ['fix-node-usb'], () => {
   // Rebuild noble's usb module with the correct electron version.
   // Only run this task on windows and linux.
   if (platform === 'win32' || platform === 'linux') {
